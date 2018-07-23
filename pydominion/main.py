@@ -8,6 +8,9 @@ import random
 import sys
 from collections import Counter
 
+from agent import CLIAgent
+from defines import *
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description=' ')
@@ -16,14 +19,11 @@ def parse_arguments():
     args = parser.parse_args()
     return args
 
-class CardType:
-    ACTION, TREASURE, VICTORY, CURSE, REACTION, ATTACK, NONE = range(7)
-
 class Card:
     def __init__(self):
         self.name = "."
         self.coin = 0
-        self.card_types = set([CardType.NONE])
+        self.card_types = set([CardType.NULL])
 
     def __str__(self):
         return self.name
@@ -92,7 +92,9 @@ def common_basic_action(card, player):
 actions = {"1": CopperCard(), "2": SilverCard(), "3": GoldCard(), "S": SmithyCard(), "E": EstateCard(), "D": DuchyCard(), "P": ProvinceCard(), ".": Card()}
 
 class Player:
-    def __init__(self):
+    def __init__(self, agent):
+        self.phase = PhaseType.CLEANUP
+        self.agent = agent
         self.deck = []
         self.playarea = []
         self.trash = []
@@ -164,17 +166,24 @@ class Simulator:
             count = elem[1]
             print(1.0 * count / n, hand)
 
+class State(object):
+    """ Stores information which is used when an agent needs to make a decision
+    """
+    def __init__(self, player):
+        self.player = player
+
+
 class Game:
     def __init__(self):
-        self.player = Player()
+        self.player = Player(CLIAgent())
         self.player.init_deck()
 
     def play(self):
         """ command line user interface """
         while not self.finish():
-            print(self.player)
-            print("Now action phase. Choose your action {}.).".format(self.player.action_pool))
-            action = sys.stdin.readline().rstrip()
+            self.player.phase = PhaseType.ACTION
+            state = State(self.player)
+            action = self.player.agent.select(state, self.player.action_pool)
             if action not in actions:
                 # TODO: throw an exception
                 print("Invalid action")
@@ -182,14 +191,16 @@ class Game:
             if action != ".":
                 actions[action].action(self)
             print(self.player)
-            print("Now buy phase. Choose your action (123SEDP.).")
-            action = sys.stdin.readline().rstrip()
+            self.player.phase = PhaseType.BUY
+            state = State(self.player)
+            action = self.player.agent.select(state, actions)
             if action not in actions:
                 # TODO: throw an exception
                 print("Invalid buy")
                 return
             if action != ".":
                 self.player.buy(actions[action])
+            self.player.phase = PhaseType.CLEANUP
             self.player.cleanup()
 
 
