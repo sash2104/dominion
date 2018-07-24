@@ -109,17 +109,16 @@ class Player:
         self.agent = agent
         self.deck = []
         self.playarea = []
-        self.trash = []
+        self.discard_pile = []
         self.hand = []
         self.action_pool = []
         self.remain_action = 1
 
     def init_deck(self):
         for _ in range(7):
-            self.deck.append(CopperCard())
+            self.discard_pile.append(CopperCard())
         for _ in range(3):
-            self.deck.append(EstateCard())
-        random.shuffle(self.deck)
+            self.discard_pile.append(EstateCard())
         self.cleanup()
 
     def action(self, card):
@@ -133,20 +132,20 @@ class Player:
 
     def draw(self):
         if len(self.deck) == 0:
-            self.deck = self.trash
+            self.deck = self.discard_pile
             random.shuffle(self.deck)
-            self.trash = []
+            self.discard_pile = []
         top = self.deck.pop()
         if CardType.ACTION in top.card_types:
             self.action_pool.append(top)
         self.hand.append(top)
 
     def buy(self, card):
-        self.trash.append(card)
+        self.discard_pile.append(card)
 
     def cleanup(self):
         self.remain_action = 1
-        self.trash += self.hand
+        self.discard_pile += self.hand
         self.hand = []
         self.action_pool = []
         self.playarea = []
@@ -156,7 +155,7 @@ class Player:
     def __str__(self):
         out = ""
         out += "[D]" + "".join(str(c) for c in self.deck) + "\n"
-        out += "[T]" + "".join(str(c) for c in self.trash) + "\n"
+        out += "[T]" + "".join(str(c) for c in self.discard_pile) + "\n"
         out += "[H]" + "".join(str(c) for c in self.hand) + "\n"
         return out
 
