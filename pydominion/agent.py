@@ -2,9 +2,11 @@ import sys
 
 from defines import *
 
+
 class Option(object):
     """ Base Option Class
     """
+
     def __init__(self, **kwargs):
         self.info = kwargs
         self.type = OptionType.NULL
@@ -24,6 +26,7 @@ class BuyOption(Option):
 class Agent(object):
     """ Base Agent Class
     """
+
     def __init__(self):
         pass
 
@@ -45,8 +48,10 @@ class Agent(object):
 class CLIAgent(Agent):
     """ A Command Line Interface agent, which takes input from the command line.
     """
+
     def select(self, state, options):
         print(state.player)
-        print("Now {phase} phase. Choose your {phase} {options}.).".format(phase=state.player.phase.name, options=options))
+        print("Now {phase} phase. Choose your {phase} {options}.).".format(
+            phase=state.player.phase.name, options=options))
         option = sys.stdin.readline().rstrip()
         return option

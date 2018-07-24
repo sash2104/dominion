@@ -19,6 +19,7 @@ def parse_arguments():
     args = parser.parse_args()
     return args
 
+
 class Card:
     def __init__(self):
         self.name = "."
@@ -39,11 +40,13 @@ class Card:
         """
         pass
 
+
 class CopperCard(Card):
     def __init__(self):
         self.name = "1"
         self.coin = 1
         self.card_types = set([CardType.TREASURE])
+
 
 class SilverCard(Card):
     def __init__(self):
@@ -51,11 +54,13 @@ class SilverCard(Card):
         self.coin = 2
         self.card_types = set([CardType.TREASURE])
 
+
 class GoldCard(Card):
     def __init__(self):
         self.name = "3"
         self.coin = 3
         self.card_types = set([CardType.TREASURE])
+
 
 class EstateCard(Card):
     def __init__(self):
@@ -63,17 +68,20 @@ class EstateCard(Card):
         self.coin = 0
         self.card_types = set([CardType.TREASURE])
 
+
 class DuchyCard(Card):
     def __init__(self):
         self.name = "D"
         self.coin = 0
         self.card_types = set([CardType.TREASURE])
 
+
 class ProvinceCard(Card):
     def __init__(self):
         self.name = "P"
         self.coin = 0
         self.card_types = set([CardType.TREASURE])
+
 
 class SmithyCard(Card):
     def __init__(self):
@@ -85,11 +93,15 @@ class SmithyCard(Card):
     def action(self, game):
         common_basic_action(self, game.player)
 
+
 def common_basic_action(card, player):
     for _ in range(card.plus_draw):
         player.draw()
 
-actions = {"1": CopperCard(), "2": SilverCard(), "3": GoldCard(), "S": SmithyCard(), "E": EstateCard(), "D": DuchyCard(), "P": ProvinceCard(), ".": Card()}
+
+actions = {"1": CopperCard(), "2": SilverCard(), "3": GoldCard(), "S": SmithyCard(
+), "E": EstateCard(), "D": DuchyCard(), "P": ProvinceCard(), ".": Card()}
+
 
 class Player:
     def __init__(self, agent):
@@ -166,9 +178,11 @@ class Simulator:
             count = elem[1]
             print(1.0 * count / n, hand)
 
+
 class State(object):
     """ Stores information which is used when an agent needs to make a decision
     """
+
     def __init__(self, player):
         self.player = player
 
@@ -203,12 +217,12 @@ class Game:
             self.player.phase = PhaseType.CLEANUP
             self.player.cleanup()
 
-
     def finish(self):
         """ Returns True if the game satisfies one of end conditions
         """
         # WIP
         return False
+
 
 def main():
     # simulator = Simulator()
@@ -219,4 +233,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
