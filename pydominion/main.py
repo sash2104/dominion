@@ -100,10 +100,6 @@ def common_basic_action(card, player):
         player.draw()
 
 
-actions = {"1": CopperCard(), "2": SilverCard(), "3": GoldCard(), "S": SmithyCard(
-), "E": EstateCard(), "D": DuchyCard(), "P": ProvinceCard(), ".": Card()}
-
-
 class Supply:
     def __init__(self):
         self.basic_cards = {"Copper": CopperCard(), "Silver": SilverCard(),
@@ -225,12 +221,11 @@ class GameState(object):
         while not self.finish():
             self.player.phase = PhaseType.ACTION
             action = self.player.agent.select(self, self.player.action_pool)
-            if action not in actions:
-                # TODO: throw an exception
-                print("Invalid action")
-                return
-            if action != ".":
-                self.player.action(self, actions[action])
+
+            """ TODO: implement efficiently """
+            for card in self.player.action_pool:
+                if card.name == action:
+                    self.player.action(self, card)
             print(self.player)
             self.player.phase = PhaseType.BUY
             card = self.player.agent.select(self, self.supply.cards)
