@@ -47,6 +47,13 @@ class Supply:
 
 
 class Player:
+    """
+    Attributes
+    ----------
+    action_pool: dict of {str: list of Card}
+        key is card name, value is the Cards of the card name
+    """
+
     def __init__(self, agent):
         self.phase = PhaseType.CLEANUP
         self.agent = agent
@@ -54,7 +61,7 @@ class Player:
         self.playarea = []
         self.discard_pile = []
         self.hand = []
-        self.action_pool = []
+        self.action_pool = {}
         self.remain_action = 1
 
     def init_deck(self):
@@ -76,7 +83,11 @@ class Player:
         if self.remain_action < 1:
             print("No action remains")
             return
-        # TODO handからplayareaに移す処理
+
+        """ Move the card from hand to playarea """
+        """ NOTE: when this function is called, the card is removed from action_pool """
+        self.hand.remove(card) # TODO: implement efficiently
+        self.playarea.append(card)
         card.action(state)
         self.remain_action -= 1
         assert(self.remain_action >= 0)
@@ -88,7 +99,8 @@ class Player:
             self.discard_pile = []
         top = self.deck.pop()
         if CardType.ACTION in top.card_types:
-            self.action_pool.append(top)
+            self.action_pool.setdefault(top.name, [])
+            self.action_pool[top.name].append(top)
         self.hand.append(top)
 
     def buy(self, card):
@@ -97,8 +109,9 @@ class Player:
     def cleanup(self):
         self.remain_action = 1
         self.discard_pile += self.hand
+        self.discard_pile += self.playarea
         self.hand = []
-        self.action_pool = []
+        self.action_pool = {}
         self.playarea = []
         for i in range(5):
             self.draw()
@@ -107,6 +120,7 @@ class Player:
         out = ""
         out += "[D]" + "".join(str(c) for c in self.deck) + "\n"
         out += "[T]" + "".join(str(c) for c in self.discard_pile) + "\n"
+        out += "[P]" + "".join(str(c) for c in self.playarea) + "\n"
         out += "[H]" + "".join(str(c) for c in self.hand) + "\n"
         return out
 
@@ -144,10 +158,10 @@ class GameState(object):
             self.player.phase = PhaseType.ACTION
             action = self.player.agent.select(self, self.player.action_pool)
 
-            """ TODO: implement efficiently """
-            for card in self.player.action_pool:
-                if card.name == action:
-                    self.player.action(self, card)
+            if action != '.':
+                assert(action in self.player.action_pool)
+                assert(len(self.player.action_pool[action]) > 0)
+                self.player.action(self, self.player.action_pool[action].pop())
             print(self.player)
             self.player.phase = PhaseType.BUY
             card = self.player.agent.select(self, self.supply.cards)
