@@ -79,4 +79,3 @@ class SmithyCard(Card):
 def common_basic_action(card, player):
     for _ in range(card.plus_draw):
         player.draw()
-

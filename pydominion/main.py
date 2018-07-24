@@ -27,7 +27,7 @@ class Supply:
                             "Gold": GoldCard(), "Estate": EstateCard(),
                             "Duchy": DuchyCard(), "Province": ProvinceCard()}
         self.kingdom_cards = {"Smithy": SmithyCard()}
-        self.cards = {".": Card()} # dummy card
+        self.cards = {".": Card()}  # dummy card
 
         # initialize supply piles
         # WIP: check and add extra cards such as Colony
@@ -132,6 +132,7 @@ class Simulator:
 class GameState(object):
     """ Stores information which is used when an agent needs to make a decision
     """
+
     def __init__(self):
         self.player = Player(CLIAgent())
         self.player.init_deck()
