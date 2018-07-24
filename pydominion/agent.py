@@ -34,6 +34,8 @@ class Agent(object):
         """ Select an option from given options
         Parameters
         ----------
+        state: GameState
+            Current game state
         options: list of Option
             Valid options
 

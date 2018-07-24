@@ -32,11 +32,12 @@ class Card:
     def __repr__(self):
         return self.__str__()
 
-    def action(self, game):
+    def action(self, state):
         """
         Parameters
         ----------
-        game: Game
+        state: GameState
+            current game state
         """
         pass
 
@@ -90,8 +91,8 @@ class SmithyCard(Card):
         self.plus_draw = 3
         self.card_types = set([CardType.ACTION])
 
-    def action(self, game):
-        common_basic_action(self, game.player)
+    def action(self, state):
+        common_basic_action(self, state.player)
 
 
 def common_basic_action(card, player):
@@ -101,6 +102,31 @@ def common_basic_action(card, player):
 
 actions = {"1": CopperCard(), "2": SilverCard(), "3": GoldCard(), "S": SmithyCard(
 ), "E": EstateCard(), "D": DuchyCard(), "P": ProvinceCard(), ".": Card()}
+
+
+class Supply:
+    def __init__(self):
+        self.basic_cards = {"Copper": CopperCard(), "Silver": SilverCard(),
+                            "Gold": GoldCard(), "Estate": EstateCard(),
+                            "Duchy": DuchyCard(), "Province": ProvinceCard()}
+        self.kingdom_cards = {"Smithy": SmithyCard()}
+        self.cards = {".": Card()} # dummy card
+
+        # initialize supply piles
+        # WIP: check and add extra cards such as Colony
+        self.cards.update(self.basic_cards)
+        self.cards.update(self.kingdom_cards)
+        print(self.cards)
+
+    def get(self, card_name):
+        """ WIP: count down a card
+        Returns
+        -------
+        card: Card
+            A card to be bought or gained
+        """
+        assert(card_name in self.cards)
+        return self.cards[card_name]
 
 
 class Player:
@@ -121,12 +147,20 @@ class Player:
             self.discard_pile.append(EstateCard())
         self.cleanup()
 
-    def action(self, card):
+    def action(self, state, card):
+        """
+        Parameters
+        ----------
+        state: GameState
+            Current game state
+        card: Card
+            A card to play
+        """
         if self.remain_action < 1:
             print("No action remains")
             return
         # TODO handからplayareaに移す処理
-        card.action()
+        card.action(state)
         self.remain_action -= 1
         assert(self.remain_action >= 0)
 
@@ -178,41 +212,30 @@ class Simulator:
             print(1.0 * count / n, hand)
 
 
-class State(object):
+class GameState(object):
     """ Stores information which is used when an agent needs to make a decision
     """
-
-    def __init__(self, player):
-        self.player = player
-
-
-class Game:
     def __init__(self):
         self.player = Player(CLIAgent())
         self.player.init_deck()
+        self.supply = Supply()
 
     def play(self):
         """ command line user interface """
         while not self.finish():
             self.player.phase = PhaseType.ACTION
-            state = State(self.player)
-            action = self.player.agent.select(state, self.player.action_pool)
+            action = self.player.agent.select(self, self.player.action_pool)
             if action not in actions:
                 # TODO: throw an exception
                 print("Invalid action")
                 return
             if action != ".":
-                actions[action].action(self)
+                self.player.action(self, actions[action])
             print(self.player)
             self.player.phase = PhaseType.BUY
-            state = State(self.player)
-            action = self.player.agent.select(state, actions)
-            if action not in actions:
-                # TODO: throw an exception
-                print("Invalid buy")
-                return
-            if action != ".":
-                self.player.buy(actions[action])
+            card = self.player.agent.select(self, self.supply.cards)
+            if card != ".":
+                self.player.buy(self.supply.get(card))
             self.player.phase = PhaseType.CLEANUP
             self.player.cleanup()
 
@@ -226,7 +249,7 @@ class Game:
 def main():
     # simulator = Simulator()
     # simulator.simulate(10000)
-    game = Game()
+    game = GameState()
     game.play()
 
 
