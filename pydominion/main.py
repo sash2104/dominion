@@ -156,15 +156,17 @@ class GameState(object):
         """ command line user interface """
         while not self.finish():
             self.player.phase = PhaseType.ACTION
-            action = self.player.agent.select(self, self.player.action_pool)
+            if len(self.player.action_pool) > 0:
+                # TODO: support multiple actions in a turn
+                action = self.player.agent.select(self, "Action", list(self.player.action_pool.keys()))
 
-            if action != '.':
-                assert(action in self.player.action_pool)
-                assert(len(self.player.action_pool[action]) > 0)
-                self.player.action(self, self.player.action_pool[action].pop())
+                if action != '.':
+                    assert(action in self.player.action_pool)
+                    assert(len(self.player.action_pool[action]) > 0)
+                    self.player.action(self, self.player.action_pool[action].pop())
             print(self.player)
             self.player.phase = PhaseType.BUY
-            card = self.player.agent.select(self, self.supply.cards)
+            card = self.player.agent.select(self, "Buy", list(self.supply.cards.keys()))
             if card != ".":
                 self.player.buy(self.supply.get(card))
             self.player.phase = PhaseType.CLEANUP

@@ -1,3 +1,4 @@
+import click
 import sys
 
 from defines import *
@@ -51,9 +52,20 @@ class CLIAgent(Agent):
     """ A Command Line Interface agent, which takes input from the command line.
     """
 
-    def select(self, state, options):
+    def select(self, state, option_name, options):
         print(state.player)
-        print("Now {phase} phase. Choose your {phase} {options}.).".format(
-            phase=state.player.phase.name, options=options))
-        option = sys.stdin.readline().rstrip()
-        return option
+        click.echo(
+            "Select {} options (q to quit, . for null):".format(option_name))
+        for i, option in enumerate(options):
+            click.echo("{}: {}".format(i, option))
+
+        c = click.getchar()
+        if c == 'q':
+            click.echo("Goodbye.")
+            sys.exit()
+        if c.isdigit():
+            option_id = int(c)
+            assert(option_id < len(options),
+                   "Index must be lower than the number of options")
+            return options[option_id]
+        return c
