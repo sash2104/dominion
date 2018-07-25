@@ -48,7 +48,7 @@ class SilverCard(Card):
 
 class GoldCard(Card):
     def __init__(self):
-        self.name = "3"
+        self.name = "Gold"
         self.coin = 3
         self.card_types = set([CardType.TREASURE])
 

@@ -138,11 +138,13 @@ class Player:
 
     def __str__(self):
         out = ""
-        out += "[deck]\t" + "".join(str(c) for c in self.deck) + "\n"
-        out += "[discard]\t" + "".join(str(c) for c in self.discard_pile) + "\n"
-        out += "[hand]\t" + "".join(str(c) for c in self.hand) + "\n"
-        out += "[playarea]\t" + "".join(str(c) for c in self.playarea) + "\n"
-        out += "[tavern]\t" + "".join(str(c) for c in self.tavern_mat) + "\n"
+        out += " [basic   ]\tcoin({}) action({})\n".format(self.coin, self.remain_action)
+        out += " [deck    ]\t" + " ".join(str(c) for c in self.deck) + "\n"
+        out += " [discard ]\t" + " ".join(str(c) for c in self.discard_pile) + "\n"
+        out += " [hand    ]\t" + " ".join(str(c) for c in self.hand) + "\n"
+        out += " [playarea]\t" + " ".join(str(c) for c in self.playarea) + "\n"
+        if len(self.tavern_mat) > 0:
+            out += " [tavern  ]\t" + " ".join(str(c) for c in self.tavern_mat) + "\n"
         return out
 
     def hand_str(self):
