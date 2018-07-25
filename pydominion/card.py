@@ -22,6 +22,15 @@ class Card:
         """
         pass
 
+    def get_coins(self, state):
+        """ Return coins of the card when it has played in buy phase
+        Parameters
+        ----------
+        state: GameState
+            current game state
+        """
+        return self.coin
+
 
 class CopperCard(Card):
     def __init__(self):
@@ -47,28 +56,24 @@ class GoldCard(Card):
 class EstateCard(Card):
     def __init__(self):
         self.name = "E"
-        self.coin = 0
         self.card_types = set([CardType.TREASURE])
 
 
 class DuchyCard(Card):
     def __init__(self):
         self.name = "D"
-        self.coin = 0
         self.card_types = set([CardType.TREASURE])
 
 
 class ProvinceCard(Card):
     def __init__(self):
         self.name = "P"
-        self.coin = 0
         self.card_types = set([CardType.TREASURE])
 
 
 class SmithyCard(Card):
     def __init__(self):
         self.name = "S"
-        self.coin = 0
         self.plus_draw = 3
         self.card_types = set([CardType.ACTION])
 
