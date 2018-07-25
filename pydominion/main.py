@@ -71,7 +71,7 @@ class Player:
         self.logger = logger
 
         """ Information related to a card """
-        self.num_copper_on_tavern_mat = 0 # Miser
+        self.num_copper_on_tavern_mat = 0  # Miser
 
     def init_deck(self):
         for _ in range(7):
@@ -138,13 +138,16 @@ class Player:
 
     def __str__(self):
         out = ""
-        out += " [basic   ]\tcoin({}) action({})\n".format(self.coin, self.remain_action)
+        out += " [basic   ]\tcoin({}) action({})\n".format(self.coin,
+                                                           self.remain_action)
         out += " [deck    ]\t" + " ".join(str(c) for c in self.deck) + "\n"
-        out += " [discard ]\t" + " ".join(str(c) for c in self.discard_pile) + "\n"
+        out += " [discard ]\t" + " ".join(str(c)
+                                          for c in self.discard_pile) + "\n"
         out += " [hand    ]\t" + " ".join(str(c) for c in self.hand) + "\n"
         out += " [playarea]\t" + " ".join(str(c) for c in self.playarea) + "\n"
         if len(self.tavern_mat) > 0:
-            out += " [tavern  ]\t" + " ".join(str(c) for c in self.tavern_mat) + "\n"
+            out += " [tavern  ]\t" + " ".join(str(c)
+                                              for c in self.tavern_mat) + "\n"
         return out
 
     def hand_str(self):
@@ -210,6 +213,7 @@ class GameState(object):
         """
         # WIP
         return False
+
 
 def main():
     # simulator = Simulator()
