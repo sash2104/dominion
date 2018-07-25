@@ -112,8 +112,24 @@ class Player:
             self.action_pool[top.name].append(top)
         self.hand.append(top)
 
-    def buy(self, card):
-        self.discard_pile.append(card)
+    def buy(self, state):
+        """
+        Parameters
+        ----------
+        state: GameState
+            Current game state
+        """
+        for card in self.hand:
+            if CardType.TREASURE in card.card_types:
+                """ TODO:
+                    enable to choose NOT play a treasure card
+                    this is critical to buy some cards like Grand Market or Mint
+                """
+                self.coin += card.get_coins(state)
+        option = self.agent.select(state, "Buy", list(state.supply.cards.keys()))
+        if option != ".":
+            card = state.supply.get(option)
+            self.discard_pile.append(card)
 
     def cleanup(self):
         self.coin = 0
@@ -199,12 +215,8 @@ class GameState(object):
                     assert(len(self.player.action_pool[action]) > 0)
                     self.player.action(
                         self, self.player.action_pool[action].pop())
-            print(self.player)
             self.player.update_phase(PhaseType.BUY)
-            card = self.player.agent.select(
-                self, "Buy", list(self.supply.cards.keys()))
-            if card != ".":
-                self.player.buy(self.supply.get(card))
+            self.player.buy(self)
             self.player.update_phase(PhaseType.CLEANUP)
             self.player.cleanup()
 

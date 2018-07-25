@@ -6,6 +6,10 @@ class Card:
         self.name = "."
         self.coin = 0
         self.card_types = set([CardType.NULL])
+        self.init()
+
+    def init(self):
+        pass
 
     def __str__(self):
         return self.name
@@ -33,46 +37,46 @@ class Card:
 
 
 class CopperCard(Card):
-    def __init__(self):
+    def init(self):
         self.name = "Copper"
         self.coin = 1
         self.card_types = set([CardType.TREASURE])
 
 
 class SilverCard(Card):
-    def __init__(self):
+    def init(self):
         self.name = "Silver"
         self.coin = 2
         self.card_types = set([CardType.TREASURE])
 
 
 class GoldCard(Card):
-    def __init__(self):
+    def init(self):
         self.name = "Gold"
         self.coin = 3
         self.card_types = set([CardType.TREASURE])
 
 
 class EstateCard(Card):
-    def __init__(self):
+    def init(self):
         self.name = "Estate"
         self.card_types = set([CardType.TREASURE])
 
 
 class DuchyCard(Card):
-    def __init__(self):
+    def init(self):
         self.name = "Duchy"
         self.card_types = set([CardType.TREASURE])
 
 
 class ProvinceCard(Card):
-    def __init__(self):
+    def init(self):
         self.name = "Province"
         self.card_types = set([CardType.TREASURE])
 
 
 class MiserCard(Card):
-    def __init__(self):
+    def init(self):
         self.name = "Miser"
         self.card_types = set([CardType.ACTION])
 
@@ -98,7 +102,7 @@ class MiserCard(Card):
 
 
 class SmithyCard(Card):
-    def __init__(self):
+    def init(self):
         self.name = "Smithy"
         self.plus_draw = 3
         self.card_types = set([CardType.ACTION])
