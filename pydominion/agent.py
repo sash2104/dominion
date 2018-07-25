@@ -1,4 +1,3 @@
-import click
 import sys
 
 from defines import *
@@ -56,18 +55,17 @@ class CLIAgent(Agent):
 
     def select(self, state, option_name, options):
         print(state.player)
-        click.echo(
-            "Select {} options (q to quit, . for null):".format(option_name))
+        print("Select {} options (q to quit, . for null):".format(option_name))
         for i, option in enumerate(options):
             click.echo("{}: {}".format(i, option))
 
-        c = click.getchar()
+        c = sys.stdin.readline().rstrip()
         if c == 'q':
-            click.echo("Goodbye.")
+            print("Goodbye.")
             sys.exit()
         if c.isdigit():
             option_id = int(c)
-            assert(option_id < len(options),
-                   "Index must be lower than the number of options")
+            assert option_id < len(
+                options), "Index must be lower than the number of options"
             return options[option_id]
         return c
