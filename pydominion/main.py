@@ -86,7 +86,7 @@ class Player:
 
         """ Move the card from hand to playarea """
         """ NOTE: when this function is called, the card is removed from action_pool """
-        self.hand.remove(card) # TODO: implement efficiently
+        self.hand.remove(card)  # TODO: implement efficiently
         self.playarea.append(card)
         card.action(state)
         self.remain_action -= 1
@@ -147,29 +147,36 @@ class GameState(object):
     """ Stores information which is used when an agent needs to make a decision
     """
 
-    def __init__(self):
+    def __init__(self, logger):
         self.player = Player(CLIAgent())
         self.player.init_deck()
         self.supply = Supply()
+        self.logger = logger
 
     def play(self):
         """ command line user interface """
         while not self.finish():
             self.player.phase = PhaseType.ACTION
+            self.log("info", "Now {} phase.".format(self.player.phase.name))
             if len(self.player.action_pool) > 0:
                 # TODO: support multiple actions in a turn
-                action = self.player.agent.select(self, "Action", list(self.player.action_pool.keys()))
+                action = self.player.agent.select(
+                    self, "Action", list(self.player.action_pool.keys()))
 
                 if action != '.':
                     assert(action in self.player.action_pool)
                     assert(len(self.player.action_pool[action]) > 0)
-                    self.player.action(self, self.player.action_pool[action].pop())
+                    self.player.action(
+                        self, self.player.action_pool[action].pop())
             print(self.player)
             self.player.phase = PhaseType.BUY
-            card = self.player.agent.select(self, "Buy", list(self.supply.cards.keys()))
+            self.log("info", "Now {} phase.".format(self.player.phase.name))
+            card = self.player.agent.select(
+                self, "Buy", list(self.supply.cards.keys()))
             if card != ".":
                 self.player.buy(self.supply.get(card))
             self.player.phase = PhaseType.CLEANUP
+            self.log("info", "Now {} phase.".format(self.player.phase.name))
             self.player.cleanup()
 
     def finish(self):
@@ -178,11 +185,22 @@ class GameState(object):
         # WIP
         return False
 
+    def log(self, brief, message):
+        """ Logging function
+        Parameters
+        ----------
+        brief: str
+            Brief message for log
+        message: str
+            A message to log
+        """
+        self.logger.write("[{}] {}\n".format(brief, message))
+
 
 def main():
     # simulator = Simulator()
     # simulator.simulate(10000)
-    game = GameState()
+    game = GameState(sys.stderr)
     game.play()
 
 
