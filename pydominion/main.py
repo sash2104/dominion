@@ -21,6 +21,18 @@ def parse_arguments():
     return args
 
 
+def log(logger, brief, message):
+    """ Logging function
+    Parameters
+    ----------
+    brief: str
+        Brief message for log
+    message: str
+        A message to log
+    """
+    logger.write("[{}] {}\n".format(brief, message))
+
+
 class Supply:
     def __init__(self):
         self.basic_cards = {"Copper": CopperCard(), "Silver": SilverCard(),
@@ -54,7 +66,7 @@ class Player:
         key is card name, value is the Cards of the card name
     """
 
-    def __init__(self, agent):
+    def __init__(self, agent, logger):
         self.phase = PhaseType.CLEANUP
         self.agent = agent
         self.deck = []
@@ -63,6 +75,7 @@ class Player:
         self.hand = []
         self.action_pool = {}
         self.remain_action = 1
+        self.logger = logger
 
     def init_deck(self):
         for _ in range(7):
@@ -116,6 +129,16 @@ class Player:
         for i in range(5):
             self.draw()
 
+    def update_phase(self, phase):
+        """
+        Parameters
+        ----------
+        phase: PhaseType
+            Target phase
+        """
+        self.phase = phase
+        log(self.logger, "info", "Now {} phase.".format(phase.name))
+
     def __str__(self):
         out = ""
         out += "[D]" + "".join(str(c) for c in self.deck) + "\n"
@@ -148,7 +171,7 @@ class GameState(object):
     """
 
     def __init__(self, logger):
-        self.player = Player(CLIAgent())
+        self.player = Player(CLIAgent(), logger)
         self.player.init_deck()
         self.supply = Supply()
         self.logger = logger
@@ -156,8 +179,7 @@ class GameState(object):
     def play(self):
         """ command line user interface """
         while not self.finish():
-            self.player.phase = PhaseType.ACTION
-            self.log("info", "Now {} phase.".format(self.player.phase.name))
+            self.player.update_phase(PhaseType.ACTION)
             if len(self.player.action_pool) > 0:
                 # TODO: support multiple actions in a turn
                 action = self.player.agent.select(
@@ -169,14 +191,12 @@ class GameState(object):
                     self.player.action(
                         self, self.player.action_pool[action].pop())
             print(self.player)
-            self.player.phase = PhaseType.BUY
-            self.log("info", "Now {} phase.".format(self.player.phase.name))
+            self.player.update_phase(PhaseType.BUY)
             card = self.player.agent.select(
                 self, "Buy", list(self.supply.cards.keys()))
             if card != ".":
                 self.player.buy(self.supply.get(card))
-            self.player.phase = PhaseType.CLEANUP
-            self.log("info", "Now {} phase.".format(self.player.phase.name))
+            self.player.update_phase(PhaseType.CLEANUP)
             self.player.cleanup()
 
     def finish(self):
@@ -184,18 +204,6 @@ class GameState(object):
         """
         # WIP
         return False
-
-    def log(self, brief, message):
-        """ Logging function
-        Parameters
-        ----------
-        brief: str
-            Brief message for log
-        message: str
-            A message to log
-        """
-        self.logger.write("[{}] {}\n".format(brief, message))
-
 
 def main():
     # simulator = Simulator()
