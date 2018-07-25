@@ -34,14 +34,14 @@ class Card:
 
 class CopperCard(Card):
     def __init__(self):
-        self.name = "1"
+        self.name = "Copper"
         self.coin = 1
         self.card_types = set([CardType.TREASURE])
 
 
 class SilverCard(Card):
     def __init__(self):
-        self.name = "2"
+        self.name = "Silver"
         self.coin = 2
         self.card_types = set([CardType.TREASURE])
 
@@ -55,25 +55,51 @@ class GoldCard(Card):
 
 class EstateCard(Card):
     def __init__(self):
-        self.name = "E"
+        self.name = "Estate"
         self.card_types = set([CardType.TREASURE])
 
 
 class DuchyCard(Card):
     def __init__(self):
-        self.name = "D"
+        self.name = "Duchy"
         self.card_types = set([CardType.TREASURE])
 
 
 class ProvinceCard(Card):
     def __init__(self):
-        self.name = "P"
+        self.name = "Province"
         self.card_types = set([CardType.TREASURE])
+
+
+class MiserCard(Card):
+    def __init__(self):
+        self.name = "Miser"
+        self.card_types = set([CardType.ACTION])
+
+    def action(self, state):
+        player = state.player
+        options = [
+            "Put a Copper from your hand onto your Tavern mat",
+            "+$1 per Copper on your Tavern mat"]
+        option = state.player.agent.select(state, "Miser", options)
+        if option == options[0]:
+            # Put a Copper from the player's hand onto her Tavern mat
+            for card in player.hand:
+                print(card.name, card.__class__)
+                if card.name == "Copper":
+                    # copper
+                    player.hand.remove(card)
+                    player.tavern_mat.append(card)
+                    player.num_copper_on_tavern_mat += 1
+                    break
+        else:
+            # +$1 per Copper on the player's Tavern mat
+            player.coin += player.num_copper_on_tavern_mat
 
 
 class SmithyCard(Card):
     def __init__(self):
-        self.name = "S"
+        self.name = "Smithy"
         self.plus_draw = 3
         self.card_types = set([CardType.ACTION])
 

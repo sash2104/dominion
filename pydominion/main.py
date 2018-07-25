@@ -29,7 +29,7 @@ class Supply:
         self.basic_cards = {"Copper": CopperCard(), "Silver": SilverCard(),
                             "Gold": GoldCard(), "Estate": EstateCard(),
                             "Duchy": DuchyCard(), "Province": ProvinceCard()}
-        self.kingdom_cards = {"Smithy": SmithyCard()}
+        self.kingdom_cards = {"Smithy": SmithyCard(), "Miser": MiserCard()}
         self.cards = {".": Card()}  # dummy card
 
         # initialize supply piles
@@ -64,9 +64,14 @@ class Player:
         self.playarea = []
         self.discard_pile = []
         self.hand = []
+        self.tavern_mat = []
         self.action_pool = {}
         self.remain_action = 1
+        self.coin = 0
         self.logger = logger
+
+        """ Information related to a card """
+        self.num_copper_on_tavern_mat = 0 # Miser
 
     def init_deck(self):
         for _ in range(7):
@@ -111,6 +116,7 @@ class Player:
         self.discard_pile.append(card)
 
     def cleanup(self):
+        self.coin = 0
         self.remain_action = 1
         self.discard_pile += self.hand
         self.discard_pile += self.playarea
@@ -132,10 +138,11 @@ class Player:
 
     def __str__(self):
         out = ""
-        out += "[D]" + "".join(str(c) for c in self.deck) + "\n"
-        out += "[T]" + "".join(str(c) for c in self.discard_pile) + "\n"
-        out += "[P]" + "".join(str(c) for c in self.playarea) + "\n"
-        out += "[H]" + "".join(str(c) for c in self.hand) + "\n"
+        out += "[deck]\t" + "".join(str(c) for c in self.deck) + "\n"
+        out += "[discard]\t" + "".join(str(c) for c in self.discard_pile) + "\n"
+        out += "[hand]\t" + "".join(str(c) for c in self.hand) + "\n"
+        out += "[playarea]\t" + "".join(str(c) for c in self.playarea) + "\n"
+        out += "[tavern]\t" + "".join(str(c) for c in self.tavern_mat) + "\n"
         return out
 
     def hand_str(self):
