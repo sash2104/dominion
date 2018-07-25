@@ -166,10 +166,16 @@ class GameState(object):
         self.player.init_deck()
         self.supply = Supply()
         self.logger = logger
+        self.turn = 0
+
+    def update_turn(self):
+        self.turn += 1
+        log(self.logger, "info", "Turn {}".format(self.turn))
 
     def play(self):
         """ command line user interface """
         while not self.finish():
+            self.update_turn()
             self.player.update_phase(PhaseType.ACTION)
             if len(self.player.action_pool) > 0:
                 # TODO: support multiple actions in a turn
