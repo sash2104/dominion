@@ -31,12 +31,14 @@ class Agent(object):
     def __init__(self):
         pass
 
-    def select(self, state, options):
+    def select(self, state, option_name, options):
         """ Select an option from given options
         Parameters
         ----------
         state: GameState
             Current game state
+        option_name: str
+            An explanation for the options
         options: list of Option
             Valid options
 
