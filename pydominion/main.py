@@ -3,7 +3,6 @@
 
 """ """
 
-import argparse
 import random
 import sys
 from collections import Counter
@@ -11,14 +10,6 @@ from collections import Counter
 from agent import CLIAgent
 from card import *
 from defines import *
-
-
-def parse_arguments():
-    parser = argparse.ArgumentParser(description=' ')
-    parser.add_argument('-i', '--input_file', required=True)
-    parser.add_argument('-o', '--output_file', required=True)
-    args = parser.parse_args()
-    return args
 
 
 def log(logger, brief, message):
