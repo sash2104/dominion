@@ -57,7 +57,7 @@ class CLIAgent(Agent):
         print(state.player)
         print("Select {} options (q to quit, . for null):".format(option_name))
         for i, option in enumerate(options):
-            click.echo("{}: {}".format(i, option))
+            print("{}: {}".format(i, option))
 
         c = sys.stdin.readline().rstrip()
         if c == 'q':
