@@ -81,11 +81,11 @@ class MiserCard(Card):
         self.card_types = set([CardType.ACTION])
 
     def action(self, state):
-        player = state.player
+        player = state.turn_player
         options = [
             "Put a Copper from your hand onto your Tavern mat",
             "+$1 per Copper on your Tavern mat"]
-        option = state.player.agent.select(state, "Miser", options)
+        option = player.agent.select(state, "Miser", options)
         if option == options[0]:
             # Put a Copper from the player's hand onto her Tavern mat
             for card in player.hand:
@@ -108,7 +108,7 @@ class SmithyCard(Card):
         self.card_types = set([CardType.ACTION])
 
     def action(self, state):
-        common_basic_action(self, state.player)
+        common_basic_action(self, state.turn_player)
 
 
 def common_basic_action(card, player):

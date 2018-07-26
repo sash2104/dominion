@@ -187,14 +187,25 @@ class Simulator:
 
 class GameState(object):
     """ Stores information which is used when an agent needs to make a decision
+    Attributes
+    ----------
+    players: list of Player
+        the players who play this game
+    turn_player: Player
+        the player who takes the turn
+    logger: file_like
+        logger must have a `write` method such as sys.stdout or file
     """
 
     def __init__(self, logger):
-        self.player = Player(CLIAgent(), logger)
-        self.player.init_deck()
         self.supply = Supply()
         self.logger = logger
+        self.players = [Player(CLIAgent(), logger)]
+        for player in self.players:
+            player.init_deck()
         self.turn = 0
+        assert(len(self.players) > 0)
+        self.turn_player = self.players[0]
 
     def update_turn(self):
         self.turn += 1
@@ -204,21 +215,23 @@ class GameState(object):
         """ command line user interface """
         while not self.finish():
             self.update_turn()
-            self.player.update_phase(PhaseType.ACTION)
-            if len(self.player.action_pool) > 0:
-                # TODO: support multiple actions in a turn
-                action = self.player.agent.select(
-                    self, "Action", list(self.player.action_pool.keys()))
+            for player in self.players:
+                self.turn_player = player
+                self.turn_player.update_phase(PhaseType.ACTION)
+                if len(self.turn_player.action_pool) > 0:
+                    # TODO: support multiple actions in a turn
+                    action = self.turn_player.agent.select(
+                        self, "Action", list(self.turn_player.action_pool.keys()))
 
-                if action != '.':
-                    assert(action in self.player.action_pool)
-                    assert(len(self.player.action_pool[action]) > 0)
-                    self.player.action(
-                        self, self.player.action_pool[action].pop())
-            self.player.update_phase(PhaseType.BUY)
-            self.player.buy(self)
-            self.player.update_phase(PhaseType.CLEANUP)
-            self.player.cleanup()
+                    if action != '.':
+                        assert(action in self.turn_player.action_pool)
+                        assert(len(self.turn_player.action_pool[action]) > 0)
+                        self.turn_player.action(
+                            self, self.turn_player.action_pool[action].pop())
+                self.turn_player.update_phase(PhaseType.BUY)
+                self.turn_player.buy(self)
+                self.turn_player.update_phase(PhaseType.CLEANUP)
+                self.turn_player.cleanup()
 
     def finish(self):
         """ Returns True if the game satisfies one of end conditions

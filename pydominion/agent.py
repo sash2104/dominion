@@ -56,7 +56,7 @@ class CLIAgent(Agent):
     def select(self, state, option_name, options):
         # TODO: make options to list of Options, not list of str
         # TODO: make return variable to Option, not str
-        print(state.player)
+        print(state.turn_player)
         print("Select {} options (q to quit, . for null):".format(option_name))
         for i, option in enumerate(options):
             print("{}: {}".format(i, option))
