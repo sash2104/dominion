@@ -9,6 +9,14 @@ Python 3.4 or later are supported.
 $ pip install --editable .
 $ dominion
 ```
+## tests
+```
+pyenv virtualenv -p python3.4 3.4.8 py34
+pyenv virtualenv -p python3.5 3.5.5 py35
+pyenv virtualenv -p python3.6 3.6.5 py36
+pyenv shell py34 py35 py36
+tox
+```
 
 ## Emoji-prefix
 - :memo: when writing docs
