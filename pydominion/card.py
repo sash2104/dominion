@@ -1,4 +1,4 @@
-from defines import *
+from pydominion.defines import *
 
 
 class Card:

@@ -1,6 +1,6 @@
 import sys
 
-from defines import *
+from pydominion.defines import *
 
 
 class Option(object):

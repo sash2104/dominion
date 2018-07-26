@@ -7,9 +7,9 @@ import random
 import sys
 from collections import Counter
 
-from agent import CLIAgent
-from card import *
-from defines import *
+from pydominion.agent import CLIAgent
+from pydominion.card import *
+from pydominion.defines import *
 
 
 def log(logger, brief, message):
