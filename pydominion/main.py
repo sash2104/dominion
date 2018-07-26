@@ -36,7 +36,6 @@ class Supply:
         # WIP: check and add extra cards such as Colony
         self.cards.update(self.basic_cards)
         self.cards.update(self.kingdom_cards)
-        print(self.cards)
 
     def get(self, card_name):
         """ WIP: count down a card
@@ -126,7 +125,8 @@ class Player:
                     this is critical to buy some cards like Grand Market or Mint
                 """
                 self.coin += card.get_coins(state)
-        option = self.agent.select(state, "Buy", list(state.supply.cards.keys()))
+        option = self.agent.select(
+            state, "Buy", list(state.supply.cards.keys()))
         if option != ".":
             card = state.supply.get(option)
             self.discard_pile.append(card)

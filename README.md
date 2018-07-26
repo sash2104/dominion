@@ -7,6 +7,7 @@ Python 3.4 or later are supported.
 # For Developers
 ```
 $ pip install --editable .
+$ dominion
 ```
 
 ## Emoji-prefix
