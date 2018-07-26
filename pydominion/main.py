@@ -215,8 +215,9 @@ class GameState(object):
         """ command line user interface """
         while not self.finish():
             self.update_turn()
-            for player in self.players:
+            for player_id, player in enumerate(self.players):
                 self.turn_player = player
+                log(self.logger, "info", "Player {}".format(player_id))
                 self.turn_player.update_phase(PhaseType.ACTION)
                 if len(self.turn_player.action_pool) > 0:
                     # TODO: support multiple actions in a turn
