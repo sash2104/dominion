@@ -7,7 +7,8 @@ class Option(object):
     """ Base Option Class
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, description, **kwargs):
+        self.description = description
         self.info = kwargs
         self.type = OptionType.NULL
         self.init()
@@ -21,6 +22,19 @@ class BuyOption(Option):
         self.type = OptionType.BUY
         # Information of a card to buy must be in self.info
         assert("card" in self.info)
+
+
+class ActionOption(Option):
+    def init(self):
+        self.type = OptionType.ACTION
+        # Information of a card to play must be in self.info
+        assert("card" in self.info)
+
+
+class CardOption(Option):
+    """ An option to resolve ability of the played card """
+    def init(self):
+        self.type = OptionType.CARD
 
 
 class Agent(object):
@@ -57,9 +71,9 @@ class CLIAgent(Agent):
         # TODO: make options to list of Options, not list of str
         # TODO: make return variable to Option, not str
         print(state.turn_player)
-        print("Select {} options (q to quit, . for null):".format(option_name))
+        print("Select {} options (q to quit):".format(option_name))
         for i, option in enumerate(options):
-            print("{}: {}".format(i, option))
+            print("{}: {}".format(i, option.description))
 
         c = sys.stdin.readline().rstrip()
         if c == 'q':

@@ -1,6 +1,8 @@
+from pydominion.agent import *
 from pydominion.defines import *
 from pydominion.supply import Supply
 from pydominion.utils import log
+
 
 class GameState(object):
     """ Stores information which is used when an agent needs to make a decision
@@ -47,14 +49,15 @@ class GameState(object):
                 self.turn_player.update_phase(PhaseType.ACTION)
                 if len(self.turn_player.action_pool) > 0:
                     # TODO: support multiple actions in a turn
-                    action = self.turn_player.agent.select(
-                        self, "Action", list(self.turn_player.action_pool.keys()))
+                    options = [ActionOption(name, card=cards[0])
+                               for name, cards in self.turn_player.action_pool.items()]
+                    option = self.turn_player.agent.select(
+                        self, "Action", options)
 
-                    if action != '.':
-                        assert(action in self.turn_player.action_pool)
-                        assert(len(self.turn_player.action_pool[action]) > 0)
+                    if option.type == OptionType.ACTION:
+                        card = option.info["card"]
                         self.turn_player.action(
-                            self, self.turn_player.action_pool[action].pop())
+                            self, self.turn_player.action_pool[card.name].pop())
                 self.turn_player.update_phase(PhaseType.BUY)
                 self.turn_player.buy(self)
                 self.turn_player.update_phase(PhaseType.CLEANUP)

@@ -6,7 +6,7 @@ class Supply:
                             "Gold": GoldCard(), "Estate": EstateCard(),
                             "Duchy": DuchyCard(), "Province": ProvinceCard()}
         self.kingdom_cards = {"Smithy": SmithyCard(), "Miser": MiserCard()}
-        self.cards = {".": Card()}  # dummy card
+        self.cards = {}
 
         # initialize supply piles
         # WIP: check and add extra cards such as Colony

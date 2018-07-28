@@ -1,3 +1,4 @@
+from pydominion.agent import CardOption
 from pydominion.defines import *
 
 
@@ -83,8 +84,8 @@ class MiserCard(Card):
     def action(self, state):
         player = state.turn_player
         options = [
-            "Put a Copper from your hand onto your Tavern mat",
-            "+$1 per Copper on your Tavern mat"]
+            CardOption("Put a Copper from your hand onto your Tavern mat"),
+            CardOption("+$1 per Copper on your Tavern mat")]
         option = player.agent.select(state, "Miser", options)
         if option == options[0]:
             # Put a Copper from the player's hand onto her Tavern mat

@@ -10,4 +10,4 @@ class PhaseType(Enum):
 
 
 class OptionType(Enum):
-    NULL, ACTION, BUY, DRAW = range(4)
+    NULL, ACTION, BUY, CARD, DRAW = range(5)
