@@ -6,6 +6,19 @@ from pydominion.agent import *
 from pydominion.utils import log
 
 
+class BuyOption(Option):
+    def init(self):
+        self.type = OptionType.BUY
+        # Information of a card to buy must be in self.info
+        assert("card" in self.info)
+
+    def apply(self, state):
+        self._buy_a_card(state)
+
+    def _buy_a_card(self, state):
+        state.turn_player.discard_pile.append(self.info["card"])
+
+
 class Player:
     """
     Attributes
@@ -87,8 +100,7 @@ class Player:
                    for name, card in state.supply.cards.items()]
         options.append(Option("Nothing to do"))
         option = self.agent.select(state, "Buy", options)
-        if option.type == OptionType.BUY:
-            self.discard_pile.append(option.info["card"])
+        option.apply(state)
 
     def cleanup(self):
         self.coin = 0

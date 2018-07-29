@@ -16,25 +16,9 @@ class Option(object):
     def init(self):
         pass
 
-
-class BuyOption(Option):
-    def init(self):
-        self.type = OptionType.BUY
-        # Information of a card to buy must be in self.info
-        assert("card" in self.info)
-
-
-class ActionOption(Option):
-    def init(self):
-        self.type = OptionType.ACTION
-        # Information of a card to play must be in self.info
-        assert("card" in self.info)
-
-
-class CardOption(Option):
-    """ An option to resolve ability of the played card """
-    def init(self):
-        self.type = OptionType.CARD
+    def apply(self, state):
+        """ apply the option to given state """
+        pass
 
 
 class Agent(object):

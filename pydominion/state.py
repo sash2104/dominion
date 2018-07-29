@@ -4,6 +4,21 @@ from pydominion.supply import Supply
 from pydominion.utils import log
 
 
+class ActionOption(Option):
+    def init(self):
+        self.type = OptionType.ACTION
+        # Information of a card to play must be in self.info
+        assert("card" in self.info)
+
+    def apply(self, state):
+        self._choose_an_action(state)
+
+    def _choose_an_action(self, state):
+        card = self.info["card"]
+        player = state.turn_player
+        player.action(state, player.action_pool[card.name].pop())
+
+
 class GameState(object):
     """ Stores information which is used when an agent needs to make a decision
 
@@ -53,11 +68,7 @@ class GameState(object):
                                for name, cards in self.turn_player.action_pool.items()]
                     option = self.turn_player.agent.select(
                         self, "Action", options)
-
-                    if option.type == OptionType.ACTION:
-                        card = option.info["card"]
-                        self.turn_player.action(
-                            self, self.turn_player.action_pool[card.name].pop())
+                    option.apply(self)
                 self.turn_player.update_phase(PhaseType.BUY)
                 self.turn_player.buy(self)
                 self.turn_player.update_phase(PhaseType.CLEANUP)
