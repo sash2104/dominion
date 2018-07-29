@@ -108,7 +108,7 @@ class MiserCard(Card):
 
     def action(self, state):
         player = state.turn_player
-        options = [MiserOption1("dummy"), MiserOption2("dummy")]
+        options = [MiserOption1(), MiserOption2()]
         option = player.agent.select(state, "Miser", options)
         option.apply(state)
 

@@ -7,9 +7,9 @@ class Option(object):
     """ Base Option Class
     """
 
-    def __init__(self, description, **kwargs):
-        self.description = description
+    def __init__(self, **kwargs):
         self.info = kwargs
+        self.description = "Nothing to do"
         self.type = OptionType.NULL
         self.init()
 

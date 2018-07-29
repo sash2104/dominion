@@ -9,6 +9,7 @@ class ActionOption(Option):
         self.type = OptionType.ACTION
         # Information of a card to play must be in self.info
         assert("card" in self.info)
+        self.description = self.info["card"].name
 
     def apply(self, state):
         self._choose_an_action(state)
@@ -64,8 +65,8 @@ class GameState(object):
                 self.turn_player.update_phase(PhaseType.ACTION)
                 if len(self.turn_player.action_pool) > 0:
                     # TODO: support multiple actions in a turn
-                    options = [ActionOption(name, card=cards[0])
-                               for name, cards in self.turn_player.action_pool.items()]
+                    options = [ActionOption(card=cards[0])
+                               for cards in self.turn_player.action_pool.values()]
                     option = self.turn_player.agent.select(
                         self, "Action", options)
                     option.apply(self)

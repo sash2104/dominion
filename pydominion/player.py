@@ -11,6 +11,7 @@ class BuyOption(Option):
         self.type = OptionType.BUY
         # Information of a card to buy must be in self.info
         assert("card" in self.info)
+        self.description = self.info["card"].name
 
     def apply(self, state):
         self._buy_a_card(state)
@@ -96,9 +97,9 @@ class Player:
                     this is critical to buy some cards like Grand Market or Mint
                 """
                 self.coin += card.get_coins(state)
-        options = [BuyOption(name, card=card)
-                   for name, card in state.supply.cards.items()]
-        options.append(Option("Nothing to do"))
+        options = [BuyOption(card=card)
+                   for card in state.supply.cards.values()]
+        options.append(Option())
         option = self.agent.select(state, "Buy", options)
         option.apply(state)
 
