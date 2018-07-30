@@ -2,7 +2,23 @@ import random
 
 from pydominion.card import *
 from pydominion.defines import *
+from pydominion.agent import *
 from pydominion.utils import log
+
+
+class BuyOption(Option):
+    def init(self):
+        self.type = OptionType.BUY
+        # Information of a card to buy must be in self.info
+        assert("card" in self.info)
+        self.description = self.info["card"].name
+
+    def apply(self, state):
+        self._buy_a_card(state)
+
+    def _buy_a_card(self, state):
+        state.turn_player.discard_pile.append(self.info["card"])
+
 
 class Player:
     """
@@ -81,11 +97,11 @@ class Player:
                     this is critical to buy some cards like Grand Market or Mint
                 """
                 self.coin += card.get_coins(state)
-        option = self.agent.select(
-            state, "Buy", list(state.supply.cards.keys()))
-        if option != ".":
-            card = state.supply.get(option)
-            self.discard_pile.append(card)
+        options = [BuyOption(card=card)
+                   for card in state.supply.cards.values()]
+        options.append(Option())
+        option = self.agent.select(state, "Buy", options)
+        option.apply(state)
 
     def cleanup(self):
         self.coin = 0

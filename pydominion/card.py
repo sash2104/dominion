@@ -1,3 +1,4 @@
+from pydominion.agent import Option
 from pydominion.defines import *
 
 
@@ -75,6 +76,31 @@ class ProvinceCard(Card):
         self.card_types = set([CardType.TREASURE])
 
 
+class MiserOption1(Option):
+    def init(self):
+        self.type = OptionType.CARD
+        self.description = "Put a Copper from your hand onto your Tavern mat"
+
+    def apply(self, state):
+        player = state.turn_player
+        for card in player.hand:
+            if card.name == "Copper":
+                player.hand.remove(card)
+                player.tavern_mat.append(card)
+                player.num_copper_on_tavern_mat += 1
+                return
+
+
+class MiserOption2(Option):
+    def init(self):
+        self.type = OptionType.CARD
+        self.description = "+$1 per Copper on your Tavern mat"
+
+    def apply(self, state):
+        player = state.turn_player
+        player.coin += player.num_copper_on_tavern_mat
+
+
 class MiserCard(Card):
     def init(self):
         self.name = "Miser"
@@ -82,23 +108,9 @@ class MiserCard(Card):
 
     def action(self, state):
         player = state.turn_player
-        options = [
-            "Put a Copper from your hand onto your Tavern mat",
-            "+$1 per Copper on your Tavern mat"]
+        options = [MiserOption1(), MiserOption2()]
         option = player.agent.select(state, "Miser", options)
-        if option == options[0]:
-            # Put a Copper from the player's hand onto her Tavern mat
-            for card in player.hand:
-                print(card.name, card.__class__)
-                if card.name == "Copper":
-                    # copper
-                    player.hand.remove(card)
-                    player.tavern_mat.append(card)
-                    player.num_copper_on_tavern_mat += 1
-                    break
-        else:
-            # +$1 per Copper on the player's Tavern mat
-            player.coin += player.num_copper_on_tavern_mat
+        option.apply(state)
 
 
 class SmithyCard(Card):

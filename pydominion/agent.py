@@ -9,18 +9,16 @@ class Option(object):
 
     def __init__(self, **kwargs):
         self.info = kwargs
+        self.description = "Nothing to do"
         self.type = OptionType.NULL
         self.init()
 
     def init(self):
         pass
 
-
-class BuyOption(Option):
-    def init(self):
-        self.type = OptionType.BUY
-        # Information of a card to buy must be in self.info
-        assert("card" in self.info)
+    def apply(self, state):
+        """ apply the option to given state """
+        pass
 
 
 class Agent(object):
@@ -57,9 +55,9 @@ class CLIAgent(Agent):
         # TODO: make options to list of Options, not list of str
         # TODO: make return variable to Option, not str
         print(state.turn_player)
-        print("Select {} options (q to quit, . for null):".format(option_name))
+        print("Select {} options (q to quit):".format(option_name))
         for i, option in enumerate(options):
-            print("{}: {}".format(i, option))
+            print("{}: {}".format(i, option.description))
 
         c = sys.stdin.readline().rstrip()
         if c == 'q':
