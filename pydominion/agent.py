@@ -52,8 +52,6 @@ class CLIAgent(Agent):
     """
 
     def select(self, state, option_name, options):
-        # TODO: make options to list of Options, not list of str
-        # TODO: make return variable to Option, not str
         print(state.turn_player)
         print("Select {} options (q to quit):".format(option_name))
         for i, option in enumerate(options):
@@ -63,9 +61,8 @@ class CLIAgent(Agent):
         if c == 'q':
             print("Goodbye.")
             sys.exit()
-        if c.isdigit():
-            option_id = int(c)
-            assert option_id < len(
-                options), "Index must be lower than the number of options"
-            return options[option_id]
-        return c
+        assert c.isdigit(), "Input must be one of {}".format(list(range(len(options))))
+        option_id = int(c)
+        assert option_id < len(options), "Input must be one of {}".format(
+            list(range(len(options))))
+        return options[option_id]
