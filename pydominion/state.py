@@ -16,8 +16,7 @@ class ActionOption(Option):
 
     def _choose_an_action(self, state):
         card = self.info["card"]
-        player = state.turn_player
-        player.action(state, player.action_pool[card.name].pop())
+        state.turn_player.action(state, card)
 
 
 class GameState(object):
@@ -63,12 +62,18 @@ class GameState(object):
                 self.turn_player = player
                 log(self.logger, "info", "Player {}".format(player_id))
                 self.turn_player.update_phase(PhaseType.ACTION)
-                if len(self.turn_player.action_pool) > 0:
+                while self.turn_player.remain_action > 0:
+                    if len(self.turn_player.action_pool) == 0:
+                        break
                     # TODO: support multiple actions in a turn
                     options = [ActionOption(card=cards[0])
                                for cards in self.turn_player.action_pool.values()]
+                    options.append(Option())
                     option = self.turn_player.agent.select(
                         self, "Action", options)
+                    if option.type == OptionType.NULL:
+                        """ if turn player chooses nothing to do, finish action phase """
+                        break
                     option.apply(self)
                 self.turn_player.update_phase(PhaseType.BUY)
                 self.turn_player.buy(self)
