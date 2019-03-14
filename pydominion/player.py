@@ -102,7 +102,7 @@ class Player:
                 """
                 self.coin += card.get_coins(state)
         options = [BuyOption(card=card)
-                   for card in state.supply.cards.values()]
+                   for card in state.supply.cards.values() if card.cost <= self.coin]
         options.append(Option())
         option = self.agent.select(state, "Buy", options)
         option.apply(state)
