@@ -69,10 +69,10 @@ class Player:
         self.hand.remove(card)  # TODO: implement efficiently
         self.playarea.append(card)
         card.action(state)
+        if len(self.action_pool[card.name]) > 0:
+            self.action_pool[card.name].pop()
         if len(self.action_pool[card.name]) == 0:
             del self.action_pool[card.name]
-        else:
-            self.action_pool[card.name].pop()
         self.remain_action -= 1
         assert(self.remain_action >= 0)
 
