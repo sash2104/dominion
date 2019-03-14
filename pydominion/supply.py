@@ -5,7 +5,7 @@ class Supply:
         self.basic_cards = {"Copper": CopperCard(), "Silver": SilverCard(),
                             "Gold": GoldCard(), "Estate": EstateCard(),
                             "Duchy": DuchyCard(), "Province": ProvinceCard()}
-        self.kingdom_cards = {"Smithy": SmithyCard(), "Miser": MiserCard()}
+        self.kingdom_cards = {"Smithy": SmithyCard(), "Miser": MiserCard(), "Village": VillageCard()}
         self.cards = {}
 
         # initialize supply piles

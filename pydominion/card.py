@@ -6,6 +6,8 @@ class Card:
     def __init__(self):
         self.name = "."
         self.coin = 0
+        self.plus_action = 0
+        self.plus_draw = 0
         self.card_types = set([CardType.NULL])
         self.init()
 
@@ -113,6 +115,17 @@ class MiserCard(Card):
         option.apply(state)
 
 
+class VillageCard(Card):
+    def init(self):
+        self.name = "Village"
+        self.plus_draw = 1
+        self.plus_action = 2
+        self.card_types = set([CardType.ACTION])
+
+    def action(self, state):
+        common_basic_action(self, state.turn_player)
+
+
 class SmithyCard(Card):
     def init(self):
         self.name = "Smithy"
@@ -126,3 +139,4 @@ class SmithyCard(Card):
 def common_basic_action(card, player):
     for _ in range(card.plus_draw):
         player.draw()
+    player.remain_action += card.plus_action
